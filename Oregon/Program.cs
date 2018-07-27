@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Oregon
@@ -15,15 +16,32 @@ namespace Oregon
             Console.WriteLine("You are a banker");
             Console.WriteLine("You have 400 dollars");
 
-            ConsoleKeyInfo key;
 
             var game = new Game();
+            var wagon = new Wagon();
+            
 
-            game.Start();
-            var input = new InputManager();
+            InputManager.Init();
 
 
-            game.Update();
+            UpdateService.GameObjects.Add(game);
+            UpdateService.GameObjects.Add(wagon);
+
+            UpdateService.Init();
+
+
+            while (InputManager.CurrentKey.Key != ConsoleKey.Q)
+            {
+                UpdateService.Update();
+                //Console.CursorTop = 5;
+                //Console.WriteLine("\rdooing game stuff {0}", InputManager.CurrentKey.Key);
+            }
+
+            //game.Start();
+
+            //game.Update();
+
+            //Console.Read();
 
         }
     }
@@ -31,82 +49,101 @@ namespace Oregon
 
     public class InputManager
     {
-        private readonly Task InputWatcherTask;
+        private static Task InputWatcherTask;
+        private static event KeyPressEventHandler KeyPressEvent;
 
-        public event KeyPressEventHandler KeyPressEvent;
+        private delegate void KeyPressEventHandler(KeyPressEventArgs e);
 
-        public delegate void KeyPressEventHandler(object sender, EventArgs e);
-
-        public class KeyPressEventArgs : EventArgs
+        protected class KeyPressEventArgs : EventArgs
         {
             public ConsoleKeyInfo KeyInfo { get; set;}
         }
 
-        public InputManager()
-        {            
-            this.InputWatcherTask = new Task(new Action(() =>
+        public static ConsoleKeyInfo CurrentKey;
+
+        public static void Init()
+        {
+            KeyPressEvent += OnKeyPressEvent;
+            InputWatcherTask = new Task(new Action(() =>
             {
-                 while (true) {
-                    OnKeyPressEvent(new KeyPressEventArgs() { KeyInfo = Console.ReadKey(true) });
-                 };
-                //this.InputWatcherTask.Start();
+                while(true){
+                    if (Console.KeyAvailable)
+                    {
+                        KeyPressEvent?.Invoke(new KeyPressEventArgs() { KeyInfo = Console.ReadKey(true) });
+                    }
+                   
+                }
+
             }));
 
-            this.InputWatcherTask.Start();
+            InputWatcherTask.Start();
         }
 
-        protected virtual void OnKeyPressEvent(KeyPressEventArgs e)
+        private static void OnKeyPressEvent(KeyPressEventArgs e)
         {
-            KeyPressEvent?.Invoke(this, e);
-            Console.WriteLine(e.KeyInfo.Key);
+            CurrentKey = e.KeyInfo;
+            UpdateService.GameObjects.ForEach((item) =>
+            {
+                Type thisType = item.GetType();
+                MethodInfo invokable = thisType.GetMethod("OnKeyPress");
+                invokable?.Invoke(item, null);
+            });
+
+            CurrentKey = new ConsoleKeyInfo();
         }
- 
+
+        public ConsoleKeyInfo KeyInfo { get { return CurrentKey; } }
+
 
     }
 
-    class Game : IGameObject
+    public static class UpdateService
     {
-        public InputManager InputManager = new InputManager();
+        public static List<GameObject> GameObjects = new List<GameObject>();
+
+
+        public static void Init()
+        {
+            GameObjects.ForEach((item) =>
+            {
+                Type thisType = item.GetType();
+                MethodInfo invokable = thisType.GetMethod("Start");
+                invokable?.Invoke(item, null);
+            });
+
+        }
+
+        public static void Update()
+        {
+            GameObjects.ForEach((item) =>
+            {
+                Type thisType = item.GetType();
+                MethodInfo invokable = thisType.GetMethod("Update");
+                invokable?.Invoke(item, null);
+            });
+
+
+        }
+
+    }
+
+    public class Game : GameObject
+    {
+       
 
         private object _options { get; set; }
 
-        private readonly List<IGameObject> Components = new List<IGameObject>();
-        public void Start()
-        {
-            InputManager.KeyPressEvent += this.OnKeyPress;
-            this.Components.Add(new Wagon());
 
-            this.Components.ForEach((IGameObject item) =>
-            {
-                item.Start();
-            });
-        }
-
-
-        public void OnKeyPress(object sender, EventArgs e)
-        {
-            Console.WriteLine("event");
-        }
-
-        public void Update()
-        {
-
-            foreach (var item in Components)
-            {
-                item.Update();
-            }
-
-            this.Update();
-        }
     }
 
-    public class Wagon : IGameObject
+    public class Wagon : GameObject
     {
         private int _distanceTraveled;
 
         public int DistanceTraveled { get { return this._distanceTraveled; } }
         public bool HasOxen { get; set; }
         public bool IsOkay { get; set; }
+        public bool StartTravel { get; set; } = false;
 
         public void Start()
         {
@@ -115,25 +152,46 @@ namespace Oregon
         }
         public void Update()
         {
-            if (this.HasOxen && this.IsOkay)
+            if (this.StartTravel)
             {
                 this.Travel();
-                System.Threading.Thread.Sleep(500);
+            }
+        }
+
+        public void OnKeyPress()
+        {
+            if (this.Input.KeyInfo.Key == ConsoleKey.Spacebar)
+            {
+                this.StartTravel = !this.StartTravel;
+                Console.WriteLine("toggling traveling");
+               
             }
         }
 
         private void Travel()
         {
+            if (this.HasOxen && this.IsOkay)
+            {
+                this._distanceTraveled++;
+            }
             //some how factor in the number of oxen also weather and terrain. and health of family and weight of wagon.
-            this._distanceTraveled++;
             Console.Write($"\rMiles Traveled {this._distanceTraveled}");
         }
     }
 
-    interface IGameObject
+
+    public abstract class GameObject 
     {
-        void Start();
-        void Update();
+
+        public InputManager Input = new InputManager();
+
+        public GameObject()
+        {
+            Console.WriteLine(this.Input.KeyInfo.Key);
+        }
+        public readonly List<GameObject> Components = new List<GameObject>();
+
+
     }
 
 }
