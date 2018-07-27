@@ -1,0 +1,11 @@
+C:\repos\Oregon\bin\Debug\netcoreapp2.0\Oregon.deps.json
+C:\repos\Oregon\bin\Debug\netcoreapp2.0\Oregon.runtimeconfig.json
+C:\repos\Oregon\bin\Debug\netcoreapp2.0\Oregon.runtimeconfig.dev.json
+C:\repos\Oregon\bin\Debug\netcoreapp2.0\Oregon.dll
+C:\repos\Oregon\bin\Debug\netcoreapp2.0\Oregon.pdb
+C:\repos\Oregon\obj\Debug\netcoreapp2.0\Oregon.csprojAssemblyReference.cache
+C:\repos\Oregon\obj\Debug\netcoreapp2.0\Oregon.csproj.CoreCompileInputs.cache
+C:\repos\Oregon\obj\Debug\netcoreapp2.0\Oregon.AssemblyInfoInputs.cache
+C:\repos\Oregon\obj\Debug\netcoreapp2.0\Oregon.AssemblyInfo.cs
+C:\repos\Oregon\obj\Debug\netcoreapp2.0\Oregon.dll
+C:\repos\Oregon\obj\Debug\netcoreapp2.0\Oregon.pdb
