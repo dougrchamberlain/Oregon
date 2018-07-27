@@ -6,42 +6,40 @@ using System.Threading.Tasks;
 
 namespace Oregon
 {
+    
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.Write("Hello World!\r\n");
 
 
-            Console.WriteLine("You are a banker");
-            Console.WriteLine("You have 400 dollars");
+            Console.Write("You are a banker\r\n");
+            Console.Write("You have 400 dollars\r\n");
 
+            UpdateService updateService = new UpdateService();
 
             var game = new Game();
             var wagon = new Wagon();
-            
 
-            InputManager.Init();
+            wagon.Components.Add(new Player());
 
 
-            UpdateService.GameObjects.Add(game);
-            UpdateService.GameObjects.Add(wagon);
 
-            UpdateService.Init();
+            InputManager.Init(updateService);
+
+
+            updateService.GameObjects.Add(game);
+            updateService.GameObjects.Add(wagon);
+            updateService.Init();
 
 
             while (InputManager.CurrentKey.Key != ConsoleKey.Q)
             {
-                UpdateService.Update();
-                //Console.CursorTop = 5;
-                //Console.WriteLine("\rdooing game stuff {0}", InputManager.CurrentKey.Key);
+                Console.SetCursorPosition(0, 0);
+                updateService.Update();
             }
 
-            //game.Start();
-
-            //game.Update();
-
-            //Console.Read();
 
         }
     }
@@ -50,20 +48,21 @@ namespace Oregon
     public class InputManager
     {
         private static Task InputWatcherTask;
-        private static event KeyPressEventHandler KeyPressEvent;
+        public static event KeyPressEventHandler KeyPressEvent;
 
-        private delegate void KeyPressEventHandler(KeyPressEventArgs e);
+        public delegate void KeyPressEventHandler(KeyPressEventArgs e);
 
-        protected class KeyPressEventArgs : EventArgs
+        public class KeyPressEventArgs : EventArgs
         {
             public ConsoleKeyInfo KeyInfo { get; set;}
         }
 
         public static ConsoleKeyInfo CurrentKey;
+        private static UpdateService updateService;
 
-        public static void Init()
+        public static void Init(UpdateService updateService)
         {
-            KeyPressEvent += OnKeyPressEvent;
+            InputManager.updateService = updateService;
             InputWatcherTask = new Task(new Action(() =>
             {
                 while(true){
@@ -79,30 +78,21 @@ namespace Oregon
             InputWatcherTask.Start();
         }
 
-        private static void OnKeyPressEvent(KeyPressEventArgs e)
-        {
-            CurrentKey = e.KeyInfo;
-            UpdateService.GameObjects.ForEach((item) =>
-            {
-                Type thisType = item.GetType();
-                MethodInfo invokable = thisType.GetMethod("OnKeyPress");
-                invokable?.Invoke(item, null);
-            });
 
-            CurrentKey = new ConsoleKeyInfo();
-        }
 
         public ConsoleKeyInfo KeyInfo { get { return CurrentKey; } }
 
 
     }
 
-    public static class UpdateService
+    public class UpdateService
     {
-        public static List<GameObject> GameObjects = new List<GameObject>();
+        public List<GameObject> GameObjects = new List<GameObject>();
+        public static event UpdateEventHandler UpdateEvent;
+        public delegate void UpdateEventHandler();
 
 
-        public static void Init()
+        public void Init()
         {
             GameObjects.ForEach((item) =>
             {
@@ -113,14 +103,10 @@ namespace Oregon
 
         }
 
-        public static void Update()
+        public void Update()
         {
-            GameObjects.ForEach((item) =>
-            {
-                Type thisType = item.GetType();
-                MethodInfo invokable = thisType.GetMethod("Update");
-                invokable?.Invoke(item, null);
-            });
+            UpdateEvent.Invoke();
+            
 
 
         }
@@ -163,7 +149,6 @@ namespace Oregon
             if (this.Input.KeyInfo.Key == ConsoleKey.Spacebar)
             {
                 this.StartTravel = !this.StartTravel;
-                Console.WriteLine("toggling traveling");
                
             }
         }
@@ -175,8 +160,35 @@ namespace Oregon
                 this._distanceTraveled++;
             }
             //some how factor in the number of oxen also weather and terrain. and health of family and weight of wagon.
-            Console.Write($"\rMiles Traveled {this._distanceTraveled}");
+            Console.SetCursorPosition(1, 40);
+            Console.Write($"Miles Traveled {this._distanceTraveled}");
         }
+    }
+
+    public class Player : GameObject
+    {
+        public double PlayerHealth = 100;
+      
+        public void Start()
+        {
+            Console.SetCursorPosition(1, 5);
+            Console.Write("Initialize Player");
+
+        }
+
+        public void Update()
+        {
+            Console.SetCursorPosition(1, 15);
+            Console.Write("I'm a playa");
+        }
+
+        public void OnKeyPress()
+        {
+            Console.SetCursorPosition(1, 20);
+            Console.Write($"HEALTH: {this.PlayerHealth-=0.001}");         
+        }
+
+     
     }
 
 
@@ -185,13 +197,33 @@ namespace Oregon
 
         public InputManager Input = new InputManager();
 
+     
+
         public GameObject()
         {
-            Console.WriteLine(this.Input.KeyInfo.Key);
+            UpdateService.UpdateEvent += this.OnUpdateEvent;
+            InputManager.KeyPressEvent += this.OnKeyPressEvent;
+            Console.Write(this.Input.KeyInfo.Key);
         }
         public readonly List<GameObject> Components = new List<GameObject>();
 
+        private void OnUpdateEvent()
+        {
+            Type thisType = this.GetType();
+            MethodInfo invokable = thisType.GetMethod("Update");
+            invokable?.Invoke(this, null);
+        }
 
+
+        private void OnKeyPressEvent(InputManager.KeyPressEventArgs e)
+        {
+            InputManager.CurrentKey = e.KeyInfo;
+            
+                Type thisType = this.GetType();
+                MethodInfo invokable = thisType.GetMethod("OnKeyPress");
+                invokable?.Invoke(this, null);
+            InputManager.CurrentKey = new ConsoleKeyInfo();
+        }
     }
 
 }
