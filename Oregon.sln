@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oregon", "Oregon.csproj", "{B87C7A8C-9F91-4B33-8F03-D3D912705DED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oregon", ".\App\Oregon.csproj", "{B87C7A8C-9F91-4B33-8F03-D3D912705DED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OregonTest", "..\OregonTest\OregonTest.csproj", "{E6628C6D-C97C-4B94-A361-EC593334B73E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OregonTest", ".\Test\OregonTest.csproj", "{E6628C6D-C97C-4B94-A361-EC593334B73E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
