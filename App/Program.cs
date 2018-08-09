@@ -45,73 +45,7 @@ namespace Oregon
     }
 
 
-    public class InputManager
-    {
-        private static Task InputWatcherTask;
-        public static event KeyPressEventHandler KeyPressEvent;
-
-        public delegate void KeyPressEventHandler(KeyPressEventArgs e);
-
-        public class KeyPressEventArgs : EventArgs
-        {
-            public ConsoleKeyInfo KeyInfo { get; set;}
-        }
-
-        public static ConsoleKeyInfo CurrentKey;
-        private static UpdateService updateService;
-
-        public static void Init(UpdateService updateService)
-        {
-            InputManager.updateService = updateService;
-            InputWatcherTask = new Task(new Action(() =>
-            {
-                while(true){
-                    if (Console.KeyAvailable)
-                    {
-                        KeyPressEvent?.Invoke(new KeyPressEventArgs() { KeyInfo = Console.ReadKey(true) });
-                    }
-                   
-                }
-
-            }));
-
-            InputWatcherTask.Start();
-        }
-
-
-
-        public ConsoleKeyInfo KeyInfo { get { return CurrentKey; } }
-
-
-    }
-
-    public class UpdateService
-    {
-        public List<GameObject> GameObjects = new List<GameObject>();
-        public static event UpdateEventHandler UpdateEvent;
-        public delegate void UpdateEventHandler();
-
-
-        public void Init()
-        {
-            GameObjects.ForEach((item) =>
-            {
-                Type thisType = item.GetType();
-                MethodInfo invokable = thisType.GetMethod("Start");
-                invokable?.Invoke(item, null);
-            });
-
-        }
-
-        public void Update()
-        {
-            UpdateEvent.Invoke();
-            
-
-
-        }
-
-    }
+   
 
     public class Game : GameObject
     {
@@ -192,39 +126,7 @@ namespace Oregon
     }
 
 
-    public abstract class GameObject 
-    {
-
-        public InputManager Input = new InputManager();
-
-     
-
-        public GameObject()
-        {
-            UpdateService.UpdateEvent += this.OnUpdateEvent;
-            InputManager.KeyPressEvent += this.OnKeyPressEvent;
-            Console.Write(this.Input.KeyInfo.Key);
-        }
-        public readonly List<GameObject> Components = new List<GameObject>();
-
-        private void OnUpdateEvent()
-        {
-            Type thisType = this.GetType();
-            MethodInfo invokable = thisType.GetMethod("Update");
-            invokable?.Invoke(this, null);
-        }
-
-
-        private void OnKeyPressEvent(InputManager.KeyPressEventArgs e)
-        {
-            InputManager.CurrentKey = e.KeyInfo;
-            
-                Type thisType = this.GetType();
-                MethodInfo invokable = thisType.GetMethod("OnKeyPress");
-                invokable?.Invoke(this, null);
-            InputManager.CurrentKey = new ConsoleKeyInfo();
-        }
-    }
+    
 
 }
 

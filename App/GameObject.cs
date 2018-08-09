@@ -4,16 +4,16 @@ using System.Reflection;
 
 namespace Oregon
 {
-    public abstract class GameObject 
+   public abstract class GameObject 
     {
         public InputManager Input = new InputManager();
         public readonly List<GameObject> Components = new List<GameObject>();
-
+  
         public GameObject()
         {
-            //wire up event listeners
             UpdateService.UpdateEvent += this.OnUpdateEvent;
             InputManager.KeyPressEvent += this.OnKeyPressEvent;
+            Console.Write(this.Input.KeyInfo.Key);
         }
 
         private void OnUpdateEvent()
@@ -27,11 +27,11 @@ namespace Oregon
         {
             InputManager.CurrentKey = e.KeyInfo;
             
-            Type thisType = this.GetType();
-            MethodInfo invokable = thisType.GetMethod("OnKeyPress");
-            invokable?.Invoke(this, null);
+                Type thisType = this.GetType();
+                MethodInfo invokable = thisType.GetMethod("OnKeyPress");
+                invokable?.Invoke(this, null);
             InputManager.CurrentKey = new ConsoleKeyInfo();
-    }
+        }
     }
 
 }
