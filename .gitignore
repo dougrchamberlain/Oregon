@@ -3,3 +3,6 @@
 .vscode
 **\packages
 **\.vs
+obj
+bin
+.vscode
