@@ -13,7 +13,6 @@ namespace Oregon
         {
             UpdateService.UpdateEvent += this.OnUpdateEvent;
             InputManager.KeyPressEvent += this.OnKeyPressEvent;
-            Console.Write(this.Input.KeyInfo.Key);
         }
 
         private void OnUpdateEvent()
@@ -25,9 +24,10 @@ namespace Oregon
 
         private void OnKeyPressEvent(InputManager.KeyPressEventArgs e)
         {
+
             InputManager.CurrentKey = e.KeyInfo;
-            
-                Type thisType = this.GetType();
+
+            Type thisType = this.GetType();
                 MethodInfo invokable = thisType.GetMethod("OnKeyPress");
                 invokable?.Invoke(this, null);
             InputManager.CurrentKey = new ConsoleKeyInfo();

@@ -5,7 +5,6 @@ namespace Oregon
 {
     public class InputManager
     {        
-        private static UpdateService updateService;
         private static Task InputWatcherTask;
 
         public static ConsoleKeyInfo CurrentKey;
@@ -19,15 +18,18 @@ namespace Oregon
             public ConsoleKeyInfo KeyInfo { get; set;}
         }
     
-        public static void Init(UpdateService updateService)
+        public static void Init()
         {
-            InputManager.updateService = updateService;
             InputWatcherTask = new Task(new Action(() =>
             {
                 while(true){
+                   
                     if (Console.KeyAvailable)
                     {
-                        KeyPressEvent?.Invoke(new KeyPressEventArgs() { KeyInfo = Console.ReadKey(true) });
+                        
+                            CurrentKey = Console.ReadKey(true);
+                            KeyPressEvent?.Invoke(new KeyPressEventArgs() { KeyInfo = CurrentKey });
+                        
                     }
                    
                 }
