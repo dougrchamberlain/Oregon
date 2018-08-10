@@ -5,8 +5,7 @@ namespace Oregon
 {
 
     class Program
-    {
-        public ScreenBuffer screen = new ScreenBuffer();
+    {        
 
         static void Main(string[] args)
         {            
@@ -23,6 +22,10 @@ namespace Oregon
             UpdateService.GameObjects.Add(new Player());
 
             UpdateService.Init();
+
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
+            Console.CursorVisible = false;
+            Console.Clear();
 
 
             while (InputManager.CurrentKey.Key != ConsoleKey.Q)

@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Oregon
 {
@@ -9,18 +10,17 @@ namespace Oregon
         Cloudy = 2,
         Raining = 3,
         Thunderstorm = 4,
-        Snowy = 5
+        Snowing = 5,
+        Blizzard = 6
     }
 
-    public enum Season
+   
+    public interface ICheckable
     {
-        Winter = 1,
-        Spring = 2,
-        Summer = 3,
-        Fall = 4,
-
-
+        int Roll(int min, int max);
     }
+
+
 
     public enum Month
     {
@@ -39,62 +39,27 @@ namespace Oregon
 
     }
 
-    public enum TempuratureFactor {
-            Freezing = -3,
-            Cold = -2,
-            Warm = 0,
-            Hot = 2,
+    public enum TemperatureFactor {
+            Freezing = 0,
+            Cool = 1,
+            Warm = 2,
+            Hot = 3,
             Scorching = 4
         }
-
-    public static class EnumHelpers
-    {
-        public static List<Enum> Roll(this Enum @enum,int iterations = 1)
-        {
-            var list = new List<Object>();
-            var values = Enum.GetValues(@enum.GetType());
-            Array.Sort(values);
-            var min = values.GetValue(0);
-            var max = values.GetValue(values.GetUpperBound(0));
-
-            for (var i = 0; i <= iterations; i++)
-            {
-               
-                list.Add(Enum.ToObject(@enum.GetType(), new Random().Next((int)min, (int)max)));
-            }
-
-            return list;
-        }
-    }
 
     public static class WeatherService
     {
        
 
-        public static WeatherType GetWeather(Season season)
-        {
-
-
-            switch (season)
-            {                
-                case Season.Winter:
-                    break;
-                case Season.Spring:
-                    break;
-                case Season.Summer:
-                    break;
-                case Season.Fall:
-                    break;
-                default:
-                    break;
-            }
-
-            return WeatherType.Sunny;
+        public static TemperatureFactor GetWeather(Season season)
+        {           
+            var tFactor = season.Check();
+            return tFactor;
         }
 
         public static Season GetSeason(DateTime Date)
         {
-            Season season = new Season();
+            Season season = Season.Winter;
 
             switch ((Month)Date.Month)
             {

@@ -12,12 +12,7 @@ namespace Oregon
 
 
         public static void Init()
-        {
-            Console.WindowWidth = 100;
-            Console.WindowHeight = 50;
-            Console.OutputEncoding = System.Text.Encoding.Unicode;
-            Console.CursorVisible = false;
-            Console.Clear();
+        {           
 
 
             GameObjects.ForEach((item) =>
@@ -35,8 +30,6 @@ namespace Oregon
         {
 
             UpdateEvent.Invoke();
-
-            //System.Threading.Thread.Sleep(2);
 
             ScreenBuffer.DrawScreen();
            

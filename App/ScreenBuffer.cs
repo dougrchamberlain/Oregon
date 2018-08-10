@@ -2,10 +2,10 @@
 
 namespace Oregon
 {
-    public class ScreenBuffer
+    public static class ScreenBuffer
     {
-        private static int width = 100;
-        private static int height = 50;
+        private static int width = Console.WindowWidth;
+        private static int height = Console.WindowHeight;
         //initiate important variables
         public static char[,] screenBufferArray = new char[width, height]; //main buffer array
         public static string screenBuffer; //buffer as string (used when drawing)
@@ -21,24 +21,29 @@ namespace Oregon
             i = 0;
             foreach (char c in arr)
             {
-                screenBufferArray[x + i, y] = c;
+                if (c != '\r')
+                {
+                    screenBufferArray[x + i, y] = c;
+                }
                 i++;
             }
         }
 
         public static void DrawScreen()
         {
+            
             screenBuffer = "";
             //iterate through buffer, adding each value to screenBuffer
             for (int iy = 0; iy < height - 1; iy++)
             {
-                for (int ix = 0; ix < width ; ix++)
+                for (int ix = 0; ix < width; ix++)
                 {
                     screenBuffer += screenBufferArray[ix, iy];
                 }
             }
             //set cursor position to top left and draw the string
             Console.SetCursorPosition(0, 0);
+            
             Console.Write(screenBuffer);
             screenBufferArray = new char[width, height];
             //note that the screen is NOT cleared at any point as this will simply overwrite the existing values on screen. Clearing will cause flickering again.

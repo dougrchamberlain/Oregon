@@ -16,14 +16,30 @@ namespace Oregon
 
         private object _options { get; set; }
 
+        public DateTime CurrentDate = DateTime.Now;
+
         public void Update()
         {
            
-            ScreenBuffer.Draw($"WEATHER:{GameStateService.CurrentWeather}", 0, 0);
-            ScreenBuffer.Draw($"SEASON:{GameStateService.CurrentSeason}", 0, 0);
-            new TempuratureFactor().Roll(1000000);
+           // ScreenBuffer.Draw($"WEATHER:{GameStateService.CurrentWeather}", 0, 0);
+           // ScreenBuffer.Draw($"SEASON:{GameStateService.CurrentSeason}", 0, 0);
+            var result = WeatherService.GetWeather(WeatherService.GetSeason(this.CurrentDate.AddDays(1)));
 
-            System.Threading.Thread.Sleep(1000);
+            //ScreenBuffer.Draw(this.CurrentDate.ToShortDateString(), 1, 1);
+            //ScreenBuffer.Draw(result.ToString(), 1, 2);
+
+            //System.Threading.Thread.Sleep(1000);
+
+            ListStats();
+        }
+
+        public void ListStats()
+        {
+            ScreenBuffer.Draw(@"foo
+foo2
+", 1, 1);
+
+
         }
 
 

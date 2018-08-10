@@ -22,7 +22,7 @@ namespace Oregon
             {
                 this.Travel();
             }
-            ScreenBuffer.Draw($"Miles Traveled {this._distanceTraveled:#000000}", 0, 30);
+            //ScreenBuffer.Draw($"Miles Traveled {this._distanceTraveled:#000000}", 0, 30);
         }
 
         public void OnKeyPress()
