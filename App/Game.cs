@@ -3,7 +3,7 @@
 namespace Oregon
 {
 
-    public class Game : GameObject
+    public class Game : Behavior
     {        
 
         public void Start()

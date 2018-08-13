@@ -2,37 +2,38 @@
 
 namespace Oregon
 {
-    public class Player : GameObject
+    public class Player : Behavior
     {
         public double Health = 100.0;
         public int RationAmount = 5;
-        public DateTime CurrentDate;
         public Food Food;
 
         public void Start()
-        {
-            CurrentDate = new DateTime(1848, 3, 1);
-            Food = GetComponent<Food>();
+        {            
+            Food = gameObject.AddComponent<Food>();
         }
 
         public void Update()
         {
             Food.Take(RationAmount);
-            CurrentDate = CurrentDate.AddDays(1);
-            ScreenBuffer.Draw($"Date:{CurrentDate.ToShortDateString()}", 20, 0);
+            UpdateService.CurrentDate = UpdateService.CurrentDate.AddDays(1);
+            ScreenBuffer.Draw($"Date:{UpdateService.CurrentDate.ToShortDateString()}", 20, 0);
             ScreenBuffer.Draw($"Health: {Health}", 20, 4);
         }
 
         public void OnKeyPress()
         {
+            ScreenBuffer.Draw("Pressing a key!", 0, 30);
         }
 
      
     }
 
-    public class Food : GameObject
+    public class Food : Behavior
     {
         public static int Amount = 1000;
+
+        
 
         public void Take(int quantity)
         {

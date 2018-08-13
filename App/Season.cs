@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Oregon
 {
 
-    public sealed class Season : GameObject
+    public sealed class Season :Behavior
     {
         private SeasonNames _season;        
 
@@ -28,11 +28,9 @@ namespace Oregon
         public Penalty CurrentPenalty { get { return _penalty; } }
         private Penalty _penalty;
 
-        public Player player;
         
         public void Start()
         {
-            player =  GetComponent<Player>();
         }
 
         public void FromDate(DateTime Date)
@@ -61,7 +59,7 @@ namespace Oregon
 
         public void Update()
         {
-            FromDate(player.CurrentDate);
+            FromDate(UpdateService.CurrentDate);
             ScreenBuffer.Draw($"Season: {_season}",0,2);
         }
 

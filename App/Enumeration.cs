@@ -5,9 +5,10 @@ using System.Text;
 
 namespace Oregon
 {
-    public abstract class Enumeration : GameObject, IComparable
+    public abstract class Enumeration : IComparable
     {
         public int Id { get; }
+        public string Name { get; }
 
         protected Enumeration()
         {

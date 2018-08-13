@@ -1,83 +1,81 @@
-﻿using System;
+﻿using Oregon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static Oregon.InputManager;
 
-namespace Oregon
-{
-   public abstract class GameObject 
+namespace Oregon { 
+
+
+
+    public class GameObject
     {
-        public InputManager Input = new InputManager();
-        public readonly List<GameObject> Components = new List<GameObject>();
 
-        protected static T GetComponent<T>()
-        {
-            T foundObject = UpdateService.GameObjects.Where((g) =>
-            {
-                var thisType = g.GetType();
-                return thisType == typeof(T);
-            }).Select(s => (T)Convert.ChangeType(s,typeof(T)) ).FirstOrDefault();
-
-            if (foundObject == null)
-            {
-                foundObject = Activator.CreateInstance<T>();
-            }
-
-            UpdateService.Add(foundObject);
-            return foundObject;
-        }
+        private readonly List<Component> Components = new List<Component>();
 
         public string Name { get; set; }
 
+
         public GameObject()
-        {
-            UpdateService.UpdateEvent += this.OnUpdateEvent;
-            InputManager.KeyPressEvent += this.OnKeyPressEvent;
+        {         
+            UpdateService.UpdateEvent += OnUpdateEvent;
+
+            InputManager.KeyPressEvent += OnKeyPressEvent;
         }
 
-        public GameObject(String Name)
-            :base()
+        public void OnKeyPressEvent(KeyPressEventArgs e)
         {
-            this.Name = Name;
-
-            Components.ForEach((item) =>
-            {
-                Type thisType = item.GetType();
-                MethodInfo invokable = thisType.GetMethod("Start");
-                invokable?.Invoke(item, null);
+                                                System.Diagnostics.Debug.WriteLine("foo");
+                         this.Components.ForEach((c) =>
+            {                                
+                var type = c.GetType();
+                MethodInfo methodInfo = type.GetMethod("OnKeyPress");
+                methodInfo?.Invoke(c,null);
             });
-
         }
-
-        public static IEnumerable<GameObject> GetComponentsByName(String Name)
-        {
-            
-            return UpdateService.GameObjects.Where((g) =>
-            {
-                return g.Name == Name;
-            }).ToList();
-        }
-        
 
         private void OnUpdateEvent()
         {
-            Type thisType = this.GetType();
-            MethodInfo invokable = thisType.GetMethod("Update");
-            invokable?.Invoke(this, null);
 
+                        this.Components.ForEach((c) =>
+            {                                
+                var type = c.GetType();
+                MethodInfo methodInfo = type.GetMethod("Update");
+                methodInfo?.Invoke(c, null);
+            });
         }
 
-        private void OnKeyPressEvent(InputManager.KeyPressEventArgs e)
+        public GameObject(String Name)
+        {          
+            this.Name = Name;
+            UpdateService.UpdateEvent += OnUpdateEvent;
+            InputManager.KeyPressEvent += OnKeyPressEvent;
+        }
+
+        public T AddComponent<T>() where T : Behavior
         {
+            var component = Activator.CreateInstance<T>();
 
-            InputManager.CurrentKey = e.KeyInfo;
+            this.Components.Add(component);
+            component.gameObject = this;
 
-            Type thisType = this.GetType();
-                MethodInfo invokable = thisType.GetMethod("OnKeyPress");
-                invokable?.Invoke(this, null);
-            InputManager.CurrentKey = new ConsoleKeyInfo();
+
+            var type = component.GetType();
+                MethodInfo methodInfo = type.GetMethod("Start");
+                methodInfo?.Invoke(component, null);
+
+            return component;
+
         }
+
+
     }
 
+    public class Component
+    {
+
+    }
 }
+
 

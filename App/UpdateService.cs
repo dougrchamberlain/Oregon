@@ -6,25 +6,10 @@ namespace Oregon
 {
     public sealed class UpdateService
     {
-        public static List<GameObject> GameObjects = new List<GameObject>();
         public static event UpdateEventHandler UpdateEvent;
         public delegate void UpdateEventHandler();
+        public static DateTime CurrentDate = new DateTime(1848,3,1);
 
-
-        public static void Init()
-        {           
-
-
-            GameObjects.ForEach((item) =>
-            {
-                Type thisType = item.GetType();
-                MethodInfo invokable = thisType.GetMethod("Start");
-                invokable?.Invoke(item, null);
-            });
-
-            
-
-        }
 
         public static void Update()
         {

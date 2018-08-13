@@ -2,7 +2,7 @@
 
 namespace Oregon
 {
-    public class Wagon : GameObject
+    public class Wagon : Behavior
     {
         private int _distanceTraveled;
 

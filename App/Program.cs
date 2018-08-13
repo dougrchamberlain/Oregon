@@ -7,30 +7,23 @@ namespace Oregon
         static void Main(string[] args)
         {
 
-            Console.SetBufferSize(100, 32);
+            
             Console.SetWindowSize(100, 32);
+            Console.SetBufferSize(100, 32);
 
             Console.OutputEncoding = System.Text.Encoding.Unicode;
             Console.CursorVisible = false;
             Console.Clear();
 
-            var game = new Game();
-            var wagon = new Wagon();
-            var player = new Player();
-            var player2 = new Player();
-            var Season = new Season();
+            GameObject GameContext = new GameObject("World");
 
-            player.Components.Add(new Food());
-            player2.Components.Add(new Food());
 
+            GameContext.AddComponent<Player>();
+            //GameContext.AddComponent<Wagon>();
+            //GameContext.AddComponent<Season>();
+
+            //GameContext.BroadcastMessage("Start");
             InputManager.Init();
-
-            UpdateService.GameObjects.Add(game);
-            UpdateService.GameObjects.Add(wagon);
-            UpdateService.GameObjects.Add(player);
-            UpdateService.GameObjects.Add(Season);            
-            UpdateService.Init();
-
 
             while (InputManager.CurrentKey.Key != ConsoleKey.Q)
             {
