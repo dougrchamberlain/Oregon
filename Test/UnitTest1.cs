@@ -12,16 +12,16 @@ namespace Test
         public void Should_Determine_Seasons()
         {
             List<Season> Seasons = new List<Season> {
-                 WeatherService.GetSeason(new DateTime(2000,1,1)),
-                  WeatherService.GetSeason(new DateTime(2000,3,1)),
-                  WeatherService.GetSeason(new DateTime(2000,3,20)),
-                  WeatherService.GetSeason(new DateTime(2000,3,21)),
-                  WeatherService.GetSeason(new DateTime(2000,6,20)),
-                  WeatherService.GetSeason(new DateTime(2000,6,21)),
-                  WeatherService.GetSeason(new DateTime(2000,9,20)),
-                  WeatherService.GetSeason(new DateTime(2000,9,21)),
-                  WeatherService.GetSeason(new DateTime(2000,12,20)),
-                  WeatherService.GetSeason(new DateTime(2000,12,21))
+                 Season.FromDate(new DateTime(2000,1,1)),
+                  Season.FromDate(new DateTime(2000,3,1)),
+                  Season.FromDate(new DateTime(2000,3,20)),
+                  Season.FromDate(new DateTime(2000,3,21)),
+                  Season.FromDate(new DateTime(2000,6,20)),
+                  Season.FromDate(new DateTime(2000,6,21)),
+                  Season.FromDate(new DateTime(2000,9,20)),
+                  Season.FromDate(new DateTime(2000,9,21)),
+                  Season.FromDate(new DateTime(2000,12,20)),
+                  Season.FromDate(new DateTime(2000,12,21))
 
         };
 

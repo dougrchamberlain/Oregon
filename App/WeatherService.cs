@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -18,6 +19,7 @@ namespace Oregon
     public interface ICheckable
     {
         int Roll(int min, int max);
+        void Check();
     }
 
 
@@ -39,69 +41,28 @@ namespace Oregon
 
     }
 
-    public enum TemperatureFactor {
-            Freezing = 0,
-            Cool = 1,
-            Warm = 2,
-            Hot = 3,
-            Scorching = 4
-        }
-
-    public static class WeatherService
+    public class Temperature : Enumeration
     {
-       
 
-        public static TemperatureFactor GetWeather(Season season)
-        {           
-            var tFactor = season.Check();
-            return tFactor;
-        }
+        public static Temperature Freezing = new Temperature(1, "Freezing");
+        public static Temperature Cool = new Temperature(2,"Cool");
+        public static Temperature Warm = new Temperature(3, "Warm");
+        public static Temperature Hot = new Temperature(4, "Hot");
+        public static Temperature Scorching = new Temperature(5, "Scorching");
 
-        public static Season GetSeason(DateTime Date)
+        protected Temperature() { }
+
+        public Temperature(int id, string name)
+            : base(id, name)
         {
-            Season season = Season.Winter;
 
-            switch ((Month)Date.Month)
-            {
-                case Month.January:
-                case Month.February:
-                    season = Season.Winter;
-                    break;
-                case Month.March:
-                    season = Date.Day < 21 ? Season.Winter : Season.Spring;
-                    break;
-
-                case Month.April:
-                case Month.May:
-                    season = Season.Spring;
-                    break;
-                case Month.June:
-                    season = Date.Day < 21 ? Season.Spring : Season.Summer;
-                    break;
-
-                case Month.July:                   
-                case Month.August:
-                    season = Season.Summer;
-                    break;
-                case Month.September:
-                    season = Date.Day < 21 ? Season.Summer : Season.Fall;
-                    break;
-                case Month.October:
-                case Month.November:
-                    season = Season.Fall;
-                    break;
-                case Month.December:
-                    season = Date.Day < 21 ? Season.Fall : Season.Winter;
-                    break;
-
-                default:
-                    break;
-            }
-            return season;
         }
 
-
-
+        public static IEnumerable<Temperature> List()
+        {
+            return new[] { Freezing,Cool,Warm,Hot,Scorching };
+        }
 
     }
+
 }

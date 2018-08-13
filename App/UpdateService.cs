@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Oregon
 {
-    public class UpdateService
+    public sealed class UpdateService
     {
         public static List<GameObject> GameObjects = new List<GameObject>();
         public static event UpdateEventHandler UpdateEvent;
@@ -29,9 +29,11 @@ namespace Oregon
         public static void Update()
         {
 
-            UpdateEvent.Invoke();
-
             ScreenBuffer.DrawScreen();
+            UpdateEvent.Invoke();
+            System.Threading.Thread.Sleep(350);
+
+          
            
         }
 
