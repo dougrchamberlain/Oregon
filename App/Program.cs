@@ -20,7 +20,9 @@ namespace Oregon
             Console.Clear();
 
             GameObject GameContext = new GameObject("World");
-
+            GameState game = GameContext.AddComponent<GameState>();
+            GameState.CurrentDate = new DateTime(1848, 2, 1);
+            
 
 
             var player1 = GameContext.AddComponent<Player>();
@@ -35,6 +37,7 @@ namespace Oregon
 
             GameContext.AddComponent<Food>();
             GameContext.AddComponent<Event>();
+            GameContext.AddComponent<Weather>();
 
             InputManager.Init();
 
@@ -42,7 +45,7 @@ namespace Oregon
             while (InputManager.CurrentKey.Key != ConsoleKey.Q)
             {
                 UpdateService.Update();
-                UpdateService.CurrentDate = UpdateService.CurrentDate.AddDays(1);
+  
  
             }
 

@@ -20,6 +20,7 @@ namespace Oregon
 
         public static void Init()
         {
+
             InputWatcherTask = new Task(new Action(() =>
             {
                 while (true)
@@ -29,6 +30,7 @@ namespace Oregon
                     {
 
                         CurrentKey = Console.ReadKey(true);
+                        System.Diagnostics.Debug.WriteLine($"key: {CurrentKey.Key}");
                         KeyPressEvent?.Invoke(new KeyPressEventArgs() { KeyInfo = CurrentKey });
 
                     }

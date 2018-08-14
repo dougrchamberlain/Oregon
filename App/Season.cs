@@ -8,7 +8,7 @@ namespace Oregon
     {
         private SeasonNames _season;        
 
-        public enum SeasonNames
+        public enum SeasonNames : uint
         {
             Winter,
             Spring,
@@ -16,7 +16,7 @@ namespace Oregon
             Fall
         }
 
-        public enum Penalty
+        public enum Penalty : int
         {
             Winter = -4,
             Spring = 0,
@@ -33,9 +33,9 @@ namespace Oregon
         {
         }
 
-        public void FromDate(DateTime Date)
-        {           
-
+        public static SeasonNames FromDate(DateTime Date)
+        {
+            SeasonNames _season;
             if (Date.Month < 4)
             {
                 _season = Date.Day > 20 && Date.Month == 3 ? SeasonNames.Spring : SeasonNames.Winter;
@@ -53,14 +53,14 @@ namespace Oregon
                 _season = Date.Day > 20 && Date.Month == 12 ? SeasonNames.Winter : SeasonNames.Fall;
             }
 
-             _penalty = Enum.Parse<Penalty>(((int)_season).ToString());
-            
+            // _penalty = Enum.Parse<Penalty>(((int)_season).ToString());
+
+            return _season;
         }
 
         public void Update()
         {
-            FromDate(UpdateService.CurrentDate);
-            ScreenBuffer.Draw($"Season: {_season}",0,2);
+            ScreenBuffer.Draw($"Season: {_season}",15,2);
         }
 
         

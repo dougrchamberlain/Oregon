@@ -45,6 +45,7 @@ namespace Oregon
             }
 
             GlobalObjectList.Add(this);
+            
         }
 
 
@@ -52,7 +53,7 @@ namespace Oregon
 
         public void OnKeyPressEvent(InputManager.KeyPressEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("foo");
+
             this.Components.ForEach((c) =>
 {
     var type = c.GetType();
@@ -63,7 +64,6 @@ namespace Oregon
 
         private void OnUpdateEvent()
         {
-            GameObject.GlobalObjectList.ForEach((g) => System.Diagnostics.Debug.WriteLine(g.Name));
             this.Components.ForEach((c) =>
 {
     var type = c.GetType();
@@ -82,7 +82,10 @@ namespace Oregon
 
 
             var type = component.GetType();
-            MethodInfo methodInfo = type.GetMethod("Start");
+            MethodInfo methodInfo = type.GetMethod("Awake");
+            methodInfo?.Invoke(component, null);
+
+           methodInfo = type.GetMethod("Start");
             methodInfo?.Invoke(component, null);
 
             return component;
@@ -91,7 +94,7 @@ namespace Oregon
 
         public void Update()
         {
-            System.Diagnostics.Debug.WriteLine("foo");
+            Console.Write("foo");
         }
 
         public List<T> GetComponents<T>() where T : Component

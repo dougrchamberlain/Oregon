@@ -65,4 +65,49 @@ namespace Oregon
 
     }
 
+    public class Weather : Behavior
+    {
+
+       
+
+        public void Start()
+        {
+            
+        }
+
+        public void Update()
+        {
+            
+
+            var roll = new Random().Next(1, 21);
+            switch (roll)
+            {
+                case 1:
+                case 2:
+                    ScreenBuffer.Draw("Hot",15,15);
+
+                    break;
+                default:
+                    ScreenBuffer.Draw("Nice",15,15);
+                    break;
+
+
+
+            }
+            WeatherCheck();
+        }
+
+        private void WeatherCheck()
+        {
+            var roll = new Random().Next(1, 21);
+
+            if(roll > 15)
+            {
+                GameState.Temp = 72;
+            }
+
+        }
+
+    }
+
 }

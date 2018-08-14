@@ -5,12 +5,4 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Enumeration.cs" />
-    <Compile Remove="Game.cs" />
-    <Compile Remove="Season.cs" />
-    <Compile Remove="Wagon.cs" />
-    <Compile Remove="WeatherService.cs" />
-  </ItemGroup>
-
 </Project>

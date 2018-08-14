@@ -19,8 +19,6 @@ namespace Oregon
         public void Update()
         {
             Food.Take(RationAmount);
-
-            ScreenBuffer.Draw($"Date:{UpdateService.CurrentDate.ToShortDateString()}", 20, 0);
             ScreenBuffer.Draw($"Health: {Health}", 20, 4);
         }
 
