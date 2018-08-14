@@ -13,13 +13,9 @@ namespace Oregon
 
         public static void Update()
         {
-
             ScreenBuffer.DrawScreen();
             UpdateEvent.Invoke();
             System.Threading.Thread.Sleep(350);
-
-          
-           
         }
 
     }

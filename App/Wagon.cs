@@ -27,7 +27,7 @@ namespace Oregon
 
         public void OnKeyPress()
         {
-            if (this.Input.KeyInfo.Key == ConsoleKey.Spacebar)
+            if (InputManager.KeyInfo.Key == ConsoleKey.Spacebar)
             {
                 this.StartTravel = !this.StartTravel;
                

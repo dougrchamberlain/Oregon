@@ -1,57 +1,77 @@
-﻿using Oregon;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using static Oregon.InputManager;
 
-namespace Oregon { 
-
-
-
+namespace Oregon
+{
     public class GameObject
     {
-
+        static private List<GameObject> GlobalObjectList = new List<GameObject>();
         private readonly List<Component> Components = new List<Component>();
 
         public string Name { get; set; }
-
+        public SortedSet<String> Tags { get; set; }
 
         public GameObject()
-        {         
+        {
+            this.Initialize();
+        }
+        public GameObject(String Name)
+        {
+            this.Name = String.IsNullOrEmpty(Name) ? this.GetHashCode().ToString() : Name;
+            this.Initialize();
+        }
+
+        public static GameObject Find(String Name)
+        {
+            return GlobalObjectList.Single((g) => g.Name == Name);
+        }
+
+        private void Initialize()
+        {
             UpdateService.UpdateEvent += OnUpdateEvent;
 
             InputManager.KeyPressEvent += OnKeyPressEvent;
+
+            var duplicate = GlobalObjectList.Any((g) =>
+            {
+               return  g.Name == this.Name;
+            });
+
+            if (duplicate)
+            {
+                throw new Exception($"Name {this.Name} already exists");
+            }
+
+            GlobalObjectList.Add(this);
         }
 
-        public void OnKeyPressEvent(KeyPressEventArgs e)
+
+
+
+        public void OnKeyPressEvent(InputManager.KeyPressEventArgs e)
         {
-                                                System.Diagnostics.Debug.WriteLine("foo");
-                         this.Components.ForEach((c) =>
-            {                                
-                var type = c.GetType();
-                MethodInfo methodInfo = type.GetMethod("OnKeyPress");
-                methodInfo?.Invoke(c,null);
-            });
+            System.Diagnostics.Debug.WriteLine("foo");
+            this.Components.ForEach((c) =>
+{
+    var type = c.GetType();
+    MethodInfo methodInfo = type.GetMethod("OnKeyPress");
+    methodInfo?.Invoke(c, null);
+});
         }
 
         private void OnUpdateEvent()
         {
-
-                        this.Components.ForEach((c) =>
-            {                                
-                var type = c.GetType();
-                MethodInfo methodInfo = type.GetMethod("Update");
-                methodInfo?.Invoke(c, null);
-            });
+            GameObject.GlobalObjectList.ForEach((g) => System.Diagnostics.Debug.WriteLine(g.Name));
+            this.Components.ForEach((c) =>
+{
+    var type = c.GetType();
+    MethodInfo methodInfo = type.GetMethod("Update");
+    methodInfo?.Invoke(c, null);
+});
         }
 
-        public GameObject(String Name)
-        {          
-            this.Name = Name;
-            UpdateService.UpdateEvent += OnUpdateEvent;
-            InputManager.KeyPressEvent += OnKeyPressEvent;
-        }
 
         public T AddComponent<T>() where T : Behavior
         {
@@ -62,13 +82,25 @@ namespace Oregon {
 
 
             var type = component.GetType();
-                MethodInfo methodInfo = type.GetMethod("Start");
-                methodInfo?.Invoke(component, null);
+            MethodInfo methodInfo = type.GetMethod("Start");
+            methodInfo?.Invoke(component, null);
 
             return component;
 
         }
 
+        public void Update()
+        {
+            System.Diagnostics.Debug.WriteLine("foo");
+        }
+
+        public List<T> GetComponents<T>() where T : Component
+        {
+            return this.Components.Where((c) =>
+            {
+                return c.GetType() == typeof(T);
+            }).Select(s => (T)s).ToList();
+        }
 
     }
 

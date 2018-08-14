@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Oregon
 {
     class Program
     {
+
+        
         static void Main(string[] args)
         {
 
@@ -18,17 +22,38 @@ namespace Oregon
             GameObject GameContext = new GameObject("World");
 
 
-            GameContext.AddComponent<Player>();
-            //GameContext.AddComponent<Wagon>();
-            //GameContext.AddComponent<Season>();
 
-            //GameContext.BroadcastMessage("Start");
+            var player1 = GameContext.AddComponent<Player>();
+            var player2 = GameContext.AddComponent<Player>();
+            var player3 = GameContext.AddComponent<Player>();
+            var player4 = GameContext.AddComponent<Player>();
+
+            player1.Name = "Doug";
+            player2.Name = "Jamie";
+            player3.Name = "Shanna";
+            player4.Name = "Leanne";
+
+            GameContext.AddComponent<Food>();
+            GameContext.AddComponent<Event>();
+
             InputManager.Init();
+
 
             while (InputManager.CurrentKey.Key != ConsoleKey.Q)
             {
                 UpdateService.Update();
+                UpdateService.CurrentDate = UpdateService.CurrentDate.AddDays(1);
+ 
             }
+
+
+        }
+
+        public static List<string> GetAllEntities()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                 .Where(x => typeof(Behavior).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+                 .Select(x => x.Name).ToList();
         }
     }
 }

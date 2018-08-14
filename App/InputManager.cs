@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Oregon
 {
-    public class InputManager
+    public static class InputManager
     {
         private static Task InputWatcherTask;
 
@@ -11,7 +11,7 @@ namespace Oregon
         public static event KeyPressEventHandler KeyPressEvent;
         public delegate void KeyPressEventHandler(KeyPressEventArgs e);
 
-        public ConsoleKeyInfo KeyInfo { get { return CurrentKey; } }
+        public static ConsoleKeyInfo KeyInfo { get { return CurrentKey; } }
 
         public class KeyPressEventArgs : EventArgs
         {
