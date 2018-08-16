@@ -22,9 +22,15 @@ namespace Oregon
 #endregion
 
             GameObject GameContext = new GameObject("World");
+            GameObject Player = new GameObject("Player");
+            Player.AddComponent<Player>();
 
+
+            GameObject NPC1 = new GameObject("Mary");
+            NPC1.AddComponent<Player>();
+
+            GameContext.AddComponent<GameState>();
             GameContext.AddComponent<Wagon>();
-            GameContext.AddComponent<Weather>();
 
 
             InputManager.Init();

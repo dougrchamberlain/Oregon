@@ -9,43 +9,26 @@ namespace Oregon
         public int RationAmount = 5;
         public Food Food;
         public String Name;
-
+        
         public void Start()
         {
             this.Name = String.IsNullOrEmpty(this.Name) ? "Gary" : this.Name;
-            Food = gameObject.GetComponent<Food>();
+            Food = this.gameObject.AddComponent<Food>();
         }
 
         public void Update()
         {
             Food.Take(RationAmount);
-            ScreenBuffer.Draw($"Health: {Health}", 20, 4);
+            ScreenBuffer.Draw($"Health: {Health}", 0, 17);
         }
 
         public void OnKeyPress()
         {
-            ScreenBuffer.Draw("Pressing a key!", 0, 30);
+            ScreenBuffer.Draw("Pressing a key!", 0, 18);
             this.Health -= 1;
         }
 
      
-    }
-
-    public class Food : Behavior
-    {
-        public static int Amount = 1000;
-
-        
-
-        public void Take(int quantity)
-        {
-            Amount -= quantity;
-        }
-
-        public void Update()
-        {
-            ScreenBuffer.Draw($"Food: {Amount}", 20, 3);
-        }
     }
 
     public class Event : Behavior

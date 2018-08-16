@@ -6,19 +6,21 @@ using System.Collections.Concurrent;
 namespace Oregon
 {
     public class Wagon : Behavior
-    {
-        public Weather Weather;
+    {       
         public float MilesTraveled = 0F;
         
         public void Start()
         {
-            Weather = GameObject.Find("World").GetComponent<Weather>();
             this.gameObject.AddComponent<Oxen>();
         }
         public void Update()
         {
-            Travel();
-            ScreenBuffer.Draw($"{MilesTraveled:###,###,###}", 0, 30);
+            if (GameState.isNextDay)
+            {
+                Travel();
+            }
+                ScreenBuffer.Draw($"{MilesTraveled:###,###,###}", 0, 30);
+            
         }
 
         public void OnKeyPress()
@@ -28,7 +30,7 @@ namespace Oregon
 
         private void Travel()
         {
-            System.Threading.Thread.Sleep(1000);
+
             MilesTraveled += Oxen.MaxDistancePossible;
         }
 
@@ -66,7 +68,7 @@ namespace Oregon
         private void CalculatePullFactor()
         {
             var unmatchedTeamFactor = 1 + (team.Count % 2) * MismatchedYolkFactor;
-            ScreenBuffer.Draw($"UnmatchedteamFactor: {unmatchedTeamFactor}", 5,10);
+            //ScreenBuffer.Draw($"UnmatchedteamFactor: {unmatchedTeamFactor}", 5,10);
 
 
             MileageContribution = isAlive ?  BaseMileage / unmatchedTeamFactor : 0;

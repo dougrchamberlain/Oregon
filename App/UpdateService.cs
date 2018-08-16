@@ -16,6 +16,7 @@ namespace Oregon
         {
             ScreenBuffer.DrawScreen();
             UpdateEvent.Invoke();
+            System.Threading.Thread.Sleep(100);
         }
 
 

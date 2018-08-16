@@ -11,30 +11,30 @@ namespace Test
         [TestMethod]
         public void Should_Determine_Seasons()
         {
-            List<Season> Seasons = new List<Season> {
-                 Season.FromDate(new DateTime(2000,1,1)),
-                  Season.FromDate(new DateTime(2000,3,1)),
-                  Season.FromDate(new DateTime(2000,3,20)),
-                  Season.FromDate(new DateTime(2000,3,21)),
-                  Season.FromDate(new DateTime(2000,6,20)),
-                  Season.FromDate(new DateTime(2000,6,21)),
-                  Season.FromDate(new DateTime(2000,9,20)),
-                  Season.FromDate(new DateTime(2000,9,21)),
-                  Season.FromDate(new DateTime(2000,12,20)),
-                  Season.FromDate(new DateTime(2000,12,21))
+            List<SeasonType> Seasons = new List<SeasonType> {
+                 SeasonType.FromDate(new DateTime(2000,1,1)),
+                  SeasonType.FromDate(new DateTime(2000,3,1)),
+                  SeasonType.FromDate(new DateTime(2000,3,20)),
+                  SeasonType.FromDate(new DateTime(2000,3,21)),
+                  SeasonType.FromDate(new DateTime(2000,6,20)),
+                  SeasonType.FromDate(new DateTime(2000,6,21)),
+                  SeasonType.FromDate(new DateTime(2000,9,20)),
+                  SeasonType.FromDate(new DateTime(2000,9,21)),
+                  SeasonType.FromDate(new DateTime(2000,12,20)),
+                  SeasonType.FromDate(new DateTime(2000,12,21))
 
         };
 
-            Assert.AreEqual(Season.Winter, Seasons[0]);
-            Assert.AreEqual(Season.Winter, Seasons[1]);
-            Assert.AreEqual(Season.Winter, Seasons[2]);
-            Assert.AreEqual(Season.Spring, Seasons[3]);
-            Assert.AreEqual(Season.Spring, Seasons[4]);
-            Assert.AreEqual(Season.Summer, Seasons[5]);
-            Assert.AreEqual(Season.Summer, Seasons[6]);
-            Assert.AreEqual(Season.Fall, Seasons[7]);
-            Assert.AreEqual(Season.Fall, Seasons[8]);
-            Assert.AreEqual(Season.Winter, Seasons[9]);
+            Assert.AreEqual(SeasonType.Winter, Seasons[0]);
+            Assert.AreEqual(SeasonType.Winter, Seasons[1]);
+            Assert.AreEqual(SeasonType.Winter, Seasons[2]);
+            Assert.AreEqual(SeasonType.Spring, Seasons[3]);
+            Assert.AreEqual(SeasonType.Spring, Seasons[4]);
+            Assert.AreEqual(SeasonType.Summer, Seasons[5]);
+            Assert.AreEqual(SeasonType.Summer, Seasons[6]);
+            Assert.AreEqual(SeasonType.Fall, Seasons[7]);
+            Assert.AreEqual(SeasonType.Fall, Seasons[8]);
+            Assert.AreEqual(SeasonType.Winter, Seasons[9]);
 
         }
     }
