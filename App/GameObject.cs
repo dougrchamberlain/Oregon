@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 
 namespace Oregon
 {
     public class GameObject
     {
+        static private Type[] ComponentTypes = { };
         static private List<GameObject> GlobalObjectList = new List<GameObject>();
-        private readonly List<Component> Components = new List<Component>();
+        private readonly BlockingCollection<Component> Components = new BlockingCollection<Component>();
 
         public string Name { get; set; }
-        public SortedSet<String> Tags { get; set; }
+        public SortedSet<String> Tags { get; set; } = new SortedSet<string>();
 
         public GameObject()
         {
@@ -22,6 +25,14 @@ namespace Oregon
             this.Name = String.IsNullOrEmpty(Name) ? this.GetHashCode().ToString() : Name;
             this.Initialize();
         }
+
+        public GameObject(String Name, params Type[] types)
+        {
+            this.Name = String.IsNullOrEmpty(Name) ? this.GetHashCode().ToString() : Name;
+            ComponentTypes = types;
+            this.Initialize();
+        }
+
 
         public static GameObject Find(String Name)
         {
@@ -36,7 +47,7 @@ namespace Oregon
 
             var duplicate = GlobalObjectList.Any((g) =>
             {
-               return  g.Name == this.Name;
+                return g.Name == this.Name;
             });
 
             if (duplicate)
@@ -45,7 +56,31 @@ namespace Oregon
             }
 
             GlobalObjectList.Add(this);
-            
+
+            foreach (var t in ComponentTypes)
+            {
+                MethodInfo method = GetType().GetMethod("AddComponent", BindingFlags.Public | BindingFlags.Instance)
+                                         .MakeGenericMethod(new Type[] { t });
+                method.Invoke(this, null);
+            }
+
+            foreach (var c in this.Components)
+            {
+                var type = c.GetType();
+                MethodInfo methodInfo = type.GetMethod("Awake");
+                methodInfo?.Invoke(c, null);
+            };
+
+
+            foreach (var c in this.Components)
+            {
+                var type = c.GetType();
+                MethodInfo methodInfo = type.GetMethod("Start");
+                methodInfo?.Invoke(c, null);
+            };
+           
+
+
         }
 
 
@@ -54,22 +89,22 @@ namespace Oregon
         public void OnKeyPressEvent(InputManager.KeyPressEventArgs e)
         {
 
-            this.Components.ForEach((c) =>
-{
-    var type = c.GetType();
-    MethodInfo methodInfo = type.GetMethod("OnKeyPress");
-    methodInfo?.Invoke(c, null);
-});
+            foreach (var c in this.Components)
+            {
+                var type = c.GetType();
+                MethodInfo methodInfo = type.GetMethod("OnKeyPress");
+                methodInfo?.Invoke(c, null);
+            };
         }
 
         private void OnUpdateEvent()
         {
-            this.Components.ForEach((c) =>
-{
-    var type = c.GetType();
-    MethodInfo methodInfo = type.GetMethod("Update");
-    methodInfo?.Invoke(c, null);
-});
+            foreach (var c in this.Components)
+            {
+                var type = c.GetType();
+                MethodInfo methodInfo = type.GetMethod("Update");
+                methodInfo?.Invoke(c, null);
+            };
         }
 
 
@@ -77,24 +112,15 @@ namespace Oregon
         {
             var component = Activator.CreateInstance<T>();
 
-            this.Components.Add(component);
+            this.Components.TryAdd(component,-1);
             component.gameObject = this;
 
 
             var type = component.GetType();
-            MethodInfo methodInfo = type.GetMethod("Awake");
+            MethodInfo methodInfo = type.GetMethod("Start");
             methodInfo?.Invoke(component, null);
-
-           methodInfo = type.GetMethod("Start");
-            methodInfo?.Invoke(component, null);
-
             return component;
 
-        }
-
-        public void Update()
-        {
-            Console.Write("foo");
         }
 
         public List<T> GetComponents<T>() where T : Component
@@ -103,6 +129,16 @@ namespace Oregon
             {
                 return c.GetType() == typeof(T);
             }).Select(s => (T)s).ToList();
+        }
+
+        public T GetComponent<T>() where T : Behavior
+        {
+            T found = this.Components.Where((c) =>
+            {
+                return c.GetType() == typeof(T);
+            }).Select(s => (T)s).FirstOrDefault();
+            
+            return found;
         }
 
     }

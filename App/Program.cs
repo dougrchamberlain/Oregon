@@ -11,33 +11,21 @@ namespace Oregon
         static void Main(string[] args)
         {
 
-            
+
+#region ConsoleInit
             Console.SetWindowSize(100, 32);
             Console.SetBufferSize(100, 32);
 
             Console.OutputEncoding = System.Text.Encoding.Unicode;
             Console.CursorVisible = false;
             Console.Clear();
+#endregion
 
             GameObject GameContext = new GameObject("World");
-            GameState game = GameContext.AddComponent<GameState>();
-            GameState.CurrentDate = new DateTime(1848, 2, 1);
-            
 
-
-            var player1 = GameContext.AddComponent<Player>();
-            var player2 = GameContext.AddComponent<Player>();
-            var player3 = GameContext.AddComponent<Player>();
-            var player4 = GameContext.AddComponent<Player>();
-
-            player1.Name = "Doug";
-            player2.Name = "Jamie";
-            player3.Name = "Shanna";
-            player4.Name = "Leanne";
-
-            GameContext.AddComponent<Food>();
-            GameContext.AddComponent<Event>();
+            GameContext.AddComponent<Wagon>();
             GameContext.AddComponent<Weather>();
+
 
             InputManager.Init();
 

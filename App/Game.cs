@@ -11,9 +11,13 @@ namespace Oregon
         public static Season.SeasonNames CurrentSeason;
         public static int SeasonPenalty;
        
+        public void Awake()
+        {
+            gameObject.AddComponent<GameState>();
+        }
         public void Start()
         {
-
+            CurrentDate = new DateTime(1848, 2, 1);
         }
 
         public void Update()

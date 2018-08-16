@@ -1,51 +1,96 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Oregon
 {
     public class Wagon : Behavior
     {
-        private int _distanceTraveled;
-
-        public int DistanceTraveled { get { return this._distanceTraveled; } }
-        public bool HasOxen { get; set; }
-        public bool IsOkay { get; set; }
-        public bool StartTravel { get; set; } = false;
-
+        public Weather Weather;
+        public float MilesTraveled = 0F;
+        
         public void Start()
         {
-            this.HasOxen = true;
-            this.IsOkay = true;
+            Weather = GameObject.Find("World").GetComponent<Weather>();
+            this.gameObject.AddComponent<Oxen>();
         }
         public void Update()
         {
-            if (this.StartTravel)
-            {
-                this.Travel();
-            }
-            //ScreenBuffer.Draw($"Miles Traveled {this._distanceTraveled:#000000}", 0, 30);
+            Travel();
+            ScreenBuffer.Draw($"{MilesTraveled:###,###,###}", 0, 30);
         }
 
         public void OnKeyPress()
         {
-            if (InputManager.KeyInfo.Key == ConsoleKey.Spacebar)
-            {
-                this.StartTravel = !this.StartTravel;
-               
-            }
+            this.gameObject.AddComponent<Oxen>();
         }
 
         private void Travel()
         {
-            if (this.HasOxen && this.IsOkay)
-            {
-                this._distanceTraveled++;
-            }
-            //some how factor in the number of oxen also weather and terrain. and health of family and weight of wagon.
-            
-          
+            System.Threading.Thread.Sleep(1000);
+            MilesTraveled += Oxen.MaxDistancePossible;
         }
+
+
+        
     }
 
+    public class Oxen : Behavior
+    {
+        private static BlockingCollection<Oxen> team = new BlockingCollection<Oxen>();
+       
 
+        private float MismatchedYolkFactor = 0.15F;
+        private bool isMissing = false;
+        private bool isAlive = true;
+
+        public float BaseMileage = 2.75F;
+        public float MileageContribution = 0.0F;
+        public static float MaxDistancePossible = 0.0F;
+
+        public Oxen()
+        {
+            team.TryAdd(this,-1);
+        }
+
+
+
+        public void Update()
+        {
+            CalculatePullFactor();
+            ScreenBuffer.Draw($"You have {team.Count} oxen. Max Team Daily Mileage {MaxDistancePossible}",0,16);
+        }
+      
+
+        private void CalculatePullFactor()
+        {
+            var unmatchedTeamFactor = 1 + (team.Count % 2) * MismatchedYolkFactor;
+            ScreenBuffer.Draw($"UnmatchedteamFactor: {unmatchedTeamFactor}", 5,10);
+
+
+            MileageContribution = isAlive ?  BaseMileage / unmatchedTeamFactor : 0;
+
+            int index = 0;
+            float sum = 0;
+            foreach(var o in team)
+            {
+
+                if (o.isAlive && !o.isMissing)
+                {
+                    sum += o.MileageContribution;
+                }
+                index++;
+            }
+
+            MaxDistancePossible = sum;
+            
+        }
+
+        
+
+        
+        
+    }
 }
 

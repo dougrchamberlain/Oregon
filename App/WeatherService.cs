@@ -68,33 +68,21 @@ namespace Oregon
     public class Weather : Behavior
     {
 
-       
+        public float Temp = 1.0F;
 
         public void Start()
         {
-            
+            Temp = 72;
         }
 
         public void Update()
         {
             
 
-            var roll = new Random().Next(1, 21);
-            switch (roll)
-            {
-                case 1:
-                case 2:
-                    ScreenBuffer.Draw("Hot",15,15);
-
-                    break;
-                default:
-                    ScreenBuffer.Draw("Nice",15,15);
-                    break;
-
-
-
-            }
-            WeatherCheck();
+            Temp = (new Random().Next(1,160) / Temp) * Temp;
+            
+            ScreenBuffer.Draw($"Current Temp {Temp - 41}",0,12);
+            
         }
 
         private void WeatherCheck()

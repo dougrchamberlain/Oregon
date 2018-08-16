@@ -13,7 +13,7 @@ namespace Oregon
         public void Start()
         {
             this.Name = String.IsNullOrEmpty(this.Name) ? "Gary" : this.Name;
-            Food = gameObject.AddComponent<Food>();
+            Food = gameObject.GetComponent<Food>();
         }
 
         public void Update()
